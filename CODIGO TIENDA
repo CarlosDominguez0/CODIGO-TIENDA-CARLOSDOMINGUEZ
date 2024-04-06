@@ -1,0 +1,105 @@
+import Foundation
+
+// Definición de la estructura de Artículo
+struct Articulo {
+    var nombre: String
+    var existencias: Int
+}
+
+// Variable para almacenar los artículos registrados
+var listaArticulos: [Articulo] = []
+
+// Función para registrar un nuevo artículo
+func registrarArticulo() {
+    print("Ingrese el nombre del artículo:")
+    if let nombre = readLine(), !nombre.isEmpty {
+        print("Ingrese la cantidad de existencias:")
+        if let existenciasStr = readLine(), let existencias = Int(existenciasStr) {
+            // Crear el artículo
+            let nuevoArticulo = Articulo(nombre: nombre, existencias: existencias)
+            listaArticulos.append(nuevoArticulo)
+            print("¡El artículo '\(nuevoArticulo.nombre)' ha sido registrado exitosamente!")
+        } else {
+            print("Cantidad de existencias inválida.")
+        }
+    } else {
+        print("Nombre de artículo inválido.")
+    }
+}
+
+// Función para ver la lista de artículos registrados
+func verListaArticulos() {
+    if listaArticulos.isEmpty {
+        print("No hay artículos registrados.")
+    } else {
+        print("Lista de artículos registrados:")
+        for (index, articulo) in listaArticulos.enumerated() {
+            print("\(index + 1). \(articulo.nombre) - Existencias: \(formatoExistencias(articulo.existencias)) piezas")
+        }
+    }
+}
+
+// Función para consultar las existencias de un artículo
+func consultarExistencias() {
+    if listaArticulos.isEmpty {
+        print("No hay artículos registrados para consultar existencias.")
+        return
+    }
+
+    print("Ingrese el nombre del artículo para consultar existencias:")
+    if let nombre = readLine()?.lowercased(), !nombre.isEmpty {
+        if let articulo = listaArticulos.first(where: { $0.nombre.lowercased() == nombre }) {
+            print("Existencias del artículo '\(articulo.nombre)': \(formatoExistencias(articulo.existencias)) piezas")
+        } else {
+            print("Artículo no encontrado. ¿Quizás quiso decir alguno de estos?")
+            for articulo in listaArticulos {
+                print("- \(articulo.nombre)")
+            }
+        }
+    } else {
+        print("Nombre de artículo inválido.")
+    }
+}
+
+// Función para dar formato a las existencias con comas para cifras mayores a 1,000
+func formatoExistencias(_ cantidad: Int) -> String {
+    let formatter = NumberFormatter()
+    formatter.numberStyle = .decimal
+    return formatter.string(from: NSNumber(value: cantidad)) ?? "\(cantidad)"
+}
+
+// Función principal que muestra el menú y maneja la interacción del usuario
+func mostrarMenu() {
+    var opcion: Int = 0
+
+    while opcion != 4 {
+        print("\n--- MENU ---")
+        print("1. Registrar artículo")
+        print("2. Ver lista de artículos")
+        print("3. Consultar existencias de artículo")
+        print("4. Salir")
+        print("Ingrese el número de opción deseada:")
+
+        if let entrada = readLine(), let numero = Int(entrada) {
+            opcion = numero
+
+            switch opcion {
+            case 1:
+                registrarArticulo()
+            case 2:
+                verListaArticulos()
+            case 3:
+                consultarExistencias()
+            case 4:
+                print("Saliendo del programa...")
+            default:
+                print("Opción inválida.")
+            }
+        } else {
+            print("Entrada inválida.")
+        }
+    }
+}
+
+// Llamada a la función principal para iniciar el programa
+mostrarMenu()
